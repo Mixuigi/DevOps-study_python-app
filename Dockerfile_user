@@ -1,0 +1,20 @@
+FROM python:3.9-slim
+
+ARG UID=1000
+ARG GID=1000
+ARG UNAME=lexa
+
+RUN groupadd -g $GID -o $UNAME && useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
+RUN pip install --upgrade pip
+
+COPY . /home/$UNAME
+WORKDIR /home/$UNAME
+
+RUN pip install -r IBA-empty-project/requirements.txt
+RUN chown -R $UNAME:$UNAME /home/$UNAME
+
+EXPOSE 8000
+
+USER $UNAME
+
+ENTRYPOINT ["python3", "IBA-empty-project/manage.py", "runserver", "0.0.0.0:8000"]

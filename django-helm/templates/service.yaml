@@ -1,0 +1,17 @@
+{{- $v := $.Files.Get "more-values.yaml" | fromYaml }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "django-helm.fullname" . }}
+  labels:
+    {{- include "django-helm.labels" . | nindent 4 }}
+spec:
+  type: {{ $v.service.type }}
+  ports:
+    - name      : {{ $v.service.app }}
+      nodePort  : {{ $v.service.nodePort }}
+      protocol  : TCP
+      port      : {{ $v.service.port }}
+      targetPort: {{ $v.service.targetPort }}
+  selector:
+    {{- include "django-helm.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,10 @@
+service:
+  app: app-port
+  type: NodePort
+  port: 8000
+  nodePort: 30444
+  targetPort: 8000
+  name : svc-dj-app
+
+env:
+  name: "DJANGO_SRV"

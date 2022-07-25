@@ -1,0 +1,28 @@
+FROM python:3.9-slim as builder
+
+COPY . /home/app
+WORKDIR /home/app
+RUN mkdir req && pip install --upgrade pip -t . && pip install -r road-to-devops/IBA-empty-project/requirements.txt -t req
+
+
+FROM python:3.9-slim
+
+ARG UID=1000
+ARG GID=1000
+ARG UNAME=lexa
+ENV PYTHONUSERBASE=/home/$UNAME/req
+ENV PYTHONPATH=/home/$UNAME/req:/home/$UNAME:/home/$UNAME/req/bin:/home/$UNAME/bin:$PYTHONPATH
+ENV PATH=/home/$UNAME/req:/home/$UNAME:/home/$UNAME/req/bin:/home/$UNAME/bin:$PATH
+
+RUN groupadd -g $GID -o $UNAME && useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
+
+COPY --from=builder /home/app /home/$UNAME
+WORKDIR /home/$UNAME/road-to-devops/IBA-empty-project
+
+RUN chown -R $UNAME:$UNAME /home/$UNAME
+
+EXPOSE 8000
+
+USER $UNAME
+
+ENTRYPOINT ["python3", "manage.py", "runserver", "0.0.0.0:8000"]

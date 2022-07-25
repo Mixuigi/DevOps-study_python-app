@@ -1,0 +1,28 @@
+FROM openjdk:11-jdk-slim as builder
+
+RUN apt update && apt install maven -y 
+
+COPY . /java_app 
+WORKDIR /java_app
+
+RUN mvn clean install
+
+
+FROM openjdk:11.0.4-jre-slim-buster
+
+ARG UID=1000
+ARG GID=1000
+ARG UNAME=alex
+
+RUN groupadd -g $GID -o $UNAME && useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
+
+COPY --from=builder /java_app/target /home/$UNAME/java_app/target
+COPY --from=builder /java_app/src /home/$UNAME/java_app/src
+COPY --from=builder /java_app/tomcat.8080 /home/$UNAME/java_app/tomcat.8080
+WORKDIR /home/$UNAME/java_app
+
+RUN chown -R $UNAME:$UNAME /home/$UNAME
+
+EXPOSE 8080
+
+ENTRYPOINT ["sh", "target/bin/webapp"]

@@ -1,0 +1,119 @@
+project:
+  name    : django-app 
+  deplname: deploy-dj-app
+  # svcname : svc-dj-app
+
+owner: Misha
+
+image:
+  name: django-web  
+  repository: docker.icdc.io/dev-team/django_app
+  tag: 0.30
+
+replicaCount: 2
+
+# imagePullSecrets: icdcarticred
+# nameOverride: ""
+# fullnameOverride: ""
+
+# serviceAccount:
+#   # Specifies whether a service account should be created
+#   create: true
+#   # Annotations to add to the service account
+#   annotations: {}
+#   # The name of the service account to use.
+#   # If not set and create is true, a name is generated using the fullname template
+#   name: ""
+
+# podAnnotations: {}
+
+# podSecurityContext: {}
+#   # fsGroup: 2000
+
+# securityContext: {}
+#   # capabilities:
+#   #   drop:
+#   #   - ALL
+#   # readOnlyRootFilesystem: true
+#   # runAsNonRoot: true
+#   # runAsUser: 1000
+
+#service:
+#  app: app-port
+#  type: NodePort
+#  port: 8000
+#  nodePort: 30444
+#  targetPort: 8000
+#  name : svc-dj-app
+
+#env: 
+#  name: "DJANGO_SRV"
+
+
+# secret:
+#   env:
+#     name_secret: ics-admin-serv
+#     git:
+#       git_uri: SPRING_CLOUD_CONFIG_URI
+#       key_git_uri: SPRING_CLOUD_CONFIG_URI
+#     user:
+#       user_name: SPRING_CLOUD_CONFIG_USERNAME
+#       key_user_name: SPRING_CLOUD_CONFIG_USERNAME
+#       user_pass: SPRING_CLOUD_CONFIG_PASSWORD
+#       key_user_pass: SPRING_CLOUD_CONFIG_PASSWORD
+#       label_name: SPRING_CLOUD_CONFIG_LABEL
+#       key_label_name: SPRING_CLOUD_CONFIG_LABEL
+#     jasypt:
+#       jasypt_pass: JASYPT_ENCRYPTOR_PASSWORD
+#       key_jasypt_pass: JASYPT_ENCRYPTOR_PASSWORD
+
+
+
+# ingress:
+#   enabled: false
+#   annotations:
+#     kubernetes.io/ingress.class: "public-iks-k8s-nginx"
+#     nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2-kippfdev-appid/start?rd=$escaped_request_uri
+#     nginx.ingress.kubernetes.io/auth-url: >-
+#       https://oauth2-kippfdev-appid.ics-dst.svc.cluster.local/oauth2-kippfdev-appid/auth
+#     # kubernetes.io/tls-acme: "true"
+#   hosts:
+#     - host: ippf-eureka-server.kippfdev-data-extracts-k8-8575edb87d2d6e70ae78aca964512a1f-0000.us-south.containers.appdomain.cloud
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: ifcs-eureka
+#             port:
+#               number: 1407
+#   tls: 
+#    - secretName: ics-ingress-dst-secret
+#      hosts:
+#        - ippf-eureka-server.kippfdev-data-extracts-k8-8575edb87d2d6e70ae78aca964512a1f-0000.us-south.containers.appdomain.cloud
+
+# resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+#   targetCPUUtilizationPercentage: 80
+#   # targetMemoryUtilizationPercentage: 80
+
+# nodeSelector: {}
+
+# tolerations: []
+
+# affinity: {}
+

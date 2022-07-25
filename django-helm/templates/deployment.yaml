@@ -1,0 +1,44 @@
+{{- $v := $.Files.Get "more-values.yaml" | fromYaml }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "django-helm.fullname" . }}
+  labels:
+    {{- include "django-helm.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "django-helm.selectorLabels" . | nindent 6 }}
+      # project: {{ .Values.project.name }}
+  template:
+    metadata:
+      labels:
+        {{- include "django-helm.selectorLabels" . | nindent 8 }}
+        # project: {{ .Values.project.name }}
+    spec:
+      containers:
+        - name : {{ .Values.image.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ $v.service.port }}
+          envFrom:
+          - secretRef:
+              name: mysecret
+          - configMapRef:
+              name: special-config
+          volumeMounts:
+          - name: volume1
+            mountPath: "/etc/volume1"
+            readOnly: true
+      volumes:
+      - name: volume1
+        secret:
+          secretName: secretmessage
+          optional: false
+      imagePullSecrets:
+      - name: regcred
+
+
